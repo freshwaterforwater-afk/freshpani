@@ -1,0 +1,62 @@
+import React from 'react'
+import { products } from '../Data/productdata'
+import { Link } from 'react-router-dom'
+
+const Product = () => {
+    return (
+   <div className="product-section mt-150 mb-150">
+      <div className="container">
+        {/* Section Header */}
+        <div className="row">
+          <div className="col-lg-8 offset-lg-2 text-center">
+            <div className="section-title">
+              <h3>
+                <span className="orange-text">Our</span> Products
+              </h3>
+              <p>
+                Discover our range of advanced water purifiers, designed with cutting-edge
+                RO, UV, and Copper technology to ensure your family drinks only the
+                purest and safest water.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Product Grid */}
+        <div className="row">
+          {products.map((product) => (
+            <div key={product.id} className="col-lg-4 col-md-6 text-center">
+              <div className="single-product-item">
+                <div className="product-image">
+                <Link to={`/product/${product.id}`}>
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      style={{ 
+                        width: '100%', 
+                        height: '250px', 
+                        objectFit: 'contain', 
+                        background: '#f9f9f9',
+                        padding: '10px' 
+                      }}
+                    />
+                  </Link>
+                </div>
+                <h3>{product.name}</h3>
+                <p className="product-price">
+                  <span>Final Price</span> ₹ {product.price}
+                </p>
+                <Link to="/cart" className="cart-btn">
+                  <i className="fas fa-shopping-cart" /> Add to Cart
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    )
+}
+
+export default Product
