@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Banner from './components/Banner';
 import Copyright from './components/Copyright';
 import Deal from './components/Deal';
@@ -12,10 +12,26 @@ import Products from './components/Sections/Products';
 import SingleProduct from './components/Sections/SingleProduct';
 import Cart from './components/Sections/Cart';
 import Checkout from './components/Sections/Checkout';
+import "./App.css"
+import { useEffect } from 'react';
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 
 const App = () => {
+
+
+
   return (
     <Router>
+      <ScrollToTop/>
       <Header />
 
       <Routes>

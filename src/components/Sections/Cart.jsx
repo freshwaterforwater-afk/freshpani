@@ -1,46 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getCart, saveCart } from '../Cart';
 
 const Cart = () => {
-  // Mocking selected products (In a real app, this comes from Context or LocalStorage)
-  const [cartItems, setCartItems] = useState([
-    {
-      id: "smart-ro",
-      name: "Aqua Guard Smart RO",
-      price: 5999,
-      image: "/img/products/product-1.jpeg",
-      quantity: 1
-    },
-    {
-      id: "mineralizer",
-      name: "Aqua Guard Mineralizer",
-      price: 7999,
-      image: "/img/products/product-8.jpeg",
-      quantity: 1
-    }
-  ]);
+  const [cartItems, setCartItems] = useState([]);
+
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    setCartItems(getCart());
+  }, []);
 
   // Handle Quantity Change
   const handleQuantityChange = (id, newQty) => {
     if (newQty < 1) return;
-    const updatedCart = cartItems.map(item => 
+
+    const updatedCart = cartItems.map(item =>
       item.id === id ? { ...item, quantity: parseInt(newQty) } : item
     );
+
     setCartItems(updatedCart);
+    saveCart(updatedCart);
   };
 
   // Remove Item
   const removeItem = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+    const updatedCart = cartItems.filter(item => item.id !== id);
+    setCartItems(updatedCart);
+    saveCart(updatedCart);
   };
 
   // Calculations
-  const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-  const shipping = subtotal > 0 ? 0 : 0; // Flat shipping fee
-  const total = subtotal + shipping;
+  const subtotal = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
+  const shipping = subtotal > 0 ? 0 : 0;
+  const installation = 0;
+  const total = subtotal + shipping + installation;
 
   return (
     <>
+      {/* Breadcrumb */}
       <div className="breadcrumb-section breadcrumb-bg">
         <div className="container">
           <div className="row">
@@ -54,47 +55,63 @@ const Cart = () => {
         </div>
       </div>
 
+      {/* Cart Section */}
       <div className="cart-section mt-150 mb-150">
         <div className="container">
           <div className="row">
+            {/* Cart Table */}
             <div className="col-lg-8 col-md-12">
               <div className="cart-table-wrap">
                 <table className="cart-table">
                   <thead className="cart-table-head">
                     <tr className="table-head-row">
-                      <th className="product-remove" />
-                      <th className="product-image">Product Image</th>
-                      <th className="product-name">Name</th>
-                      <th className="product-price">Price</th>
-                      <th className="product-quantity">Quantity</th>
-                      <th className="product-total">Total</th>
+                      <th />
+                      <th>Product Image</th>
+                      <th>Name</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Total</th>
                     </tr>
                   </thead>
+
                   <tbody>
-                    {cartItems.length > 0 ? cartItems.map((item) => (
-                      <tr key={item.id} className="table-body-row">
-                        <td className="product-remove">
-                          <button onClick={() => removeItem(item.id)} style={{border: 'none', background: 'none'}}>
-                            <i className="far fa-window-close" />
-                          </button>
-                        </td>
-                        <td className="product-image">
-                          <img src={item.image} alt={item.name} />
-                        </td>
-                        <td className="product-name">{item.name}</td>
-                        <td className="product-price">₹{item.price}</td>
-                        <td className="product-quantity">
-                          <input 
-                            type="number" 
-                            value={item.quantity} 
-                            onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                          />
-                        </td>
-                        <td className="product-total">₹{item.price * item.quantity}</td>
-                      </tr>
-                    )) : (
+                    {cartItems.length > 0 ? (
+                      cartItems.map(item => (
+                        <tr key={item.id} className="table-body-row">
+                          <td>
+                            <button
+                              onClick={() => removeItem(item.id)}
+                              style={{ border: 'none', background: 'none' }}
+                            >
+                              <i className="far fa-window-close" />
+                            </button>
+                          </td>
+
+                         <td className="product-image"> <img src={item.image} alt={item.name} /> </td>
+
+                          <td>{item.name}</td>
+
+                          <td>₹{item.price}</td>
+
+                          <td>
+                            <input
+                              type="number"
+                              min="1"
+                              value={item.quantity}
+                              onChange={(e) =>
+                                handleQuantityChange(item.id, e.target.value)
+                              }
+                            />
+                          </td>
+
+                          <td>₹{item.price * item.quantity}</td>
+                        </tr>
+                      ))
+                    ) : (
                       <tr>
-                        <td colSpan="6" className="text-center p-5">Your cart is empty</td>
+                        <td colSpan="6" className="text-center p-5">
+                          Your cart is empty
+                        </td>
                       </tr>
                     )}
                   </tbody>
@@ -102,40 +119,49 @@ const Cart = () => {
               </div>
             </div>
 
+            {/* Cart Summary */}
             <div className="col-lg-4">
               <div className="total-section">
                 <table className="total-table">
-                  <thead className="total-table-head">
-                    <tr className="table-total-row">
+                  <thead>
+                    <tr>
                       <th>Total</th>
                       <th>Price</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="total-data">
-                      <td><strong>Subtotal: </strong></td>
+                    <tr>
+                      <td><strong>Subtotal:</strong></td>
                       <td>₹{subtotal}</td>
                     </tr>
-                    <tr className="total-data">
-                      <td><strong>Shipping: </strong></td>
-                      <td>₹{0}</td>
+                    <tr>
+                      <td><strong>Shipping:</strong></td>
+                      <td>₹{shipping}</td>
                     </tr>
-                      <tr className="total-data">
-                      <td><strong>Instalation: </strong></td>
-                      <td>₹{0}</td>
+                    <tr>
+                      <td><strong>Installation:</strong></td>
+                      <td>₹{installation}</td>
                     </tr>
-                    <tr className="total-data">
-                      <td><strong>Total: </strong></td>
+                    <tr>
+                      <td><strong>Total:</strong></td>
                       <td>₹{total}</td>
                     </tr>
                   </tbody>
                 </table>
+
                 <div className="cart-buttons">
-                  <Link to="/products" className="boxed-btn">Continue Shopping</Link>
-                  <Link to="/checkout" className="boxed-btn black">Check Out</Link>
+                  <Link to="/products" className="boxed-btn">
+                    Continue Shopping
+                  </Link>
+                  {cartItems.length > 0 && (
+                    <Link to="/checkout" className="boxed-btn black">
+                      Check Out
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>

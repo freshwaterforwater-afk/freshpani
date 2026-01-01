@@ -1,12 +1,20 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { productsData } from '../../Data/productdata';
+import { addToCart } from '../Cart';
 
 const SingleProduct = () => {
   const { productId } = useParams();
   
   // Find the product that matches the URL ID
   const product = productsData?.find(p => p.id === productId);
+
+    const navigate = useNavigate();
+
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    navigate("/cart"); // optional redirect
+  };
 
   // If product not found
   if (!product) return <div className="mt-150 mb-150 text-center">Product Not Found</div>;
@@ -58,9 +66,12 @@ const SingleProduct = () => {
                   <input type="number" defaultValue="1" min="1" />
                   <div>
                     
-                  <a href="/cart" className="cart-btn">
-                    <i className="fas fa-shopping-cart" /> Add to Cart
-                  </a>
+                  <button 
+                 className="cart-btn"
+                  onClick={() => handleAddToCart(product)}
+                >
+                  <i className="fas fa-shopping-cart" /> Add to Cart
+                </button>
                   </div>
                 </div>
               </div>

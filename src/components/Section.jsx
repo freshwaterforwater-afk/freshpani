@@ -12,7 +12,7 @@ const Section = () => {
           </div>
           <div className="content">
             <h3>Free Shipping</h3>
-            <p>When order over $75</p>
+   
           </div>
         </div>
       </div>

@@ -1,57 +1,75 @@
 import React from 'react'
-import { products } from '../../Data/productdata'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { products } from '../../Data/productdata';
+import { addToCart } from '../Cart';
 
-const Products = () => {
-    return (
-        <>
-            {/* breadcrumb-section */}
-            <div className="breadcrumb-section breadcrumb-bg">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-8 offset-lg-2 text-center">
-                            <div className="breadcrumb-text">
-                                <p>We sell reliable Aqua Guard water purifiers for healthy living</p>
-                                <h1>Shop</h1>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {/* end breadcrumb section */}
-            {/* products */}
-         <div className="product-section mt-150 mb-150">
+const Product = () => {
+  const navigate = useNavigate();
+
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    navigate("/cart"); // optional redirect
+  };
+
+  return (
+    <div className="product-section mt-150 mb-150">
       <div className="container">
-        <div className="row product-lists">
+        {/* Section Header */}
+        <div className="row">
+          <div className="col-lg-8 offset-lg-2 text-center">
+            <div className="section-title">
+              <h3>
+                <span className="orange-text">Our</span> Products
+              </h3>
+              <p>
+                Discover our range of advanced water purifiers, designed with cutting-edge
+                RO, UV, and Copper technology.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Product Grid */}
+        <div className="row">
           {products.map((product) => (
             <div key={product.id} className="col-lg-4 col-md-6 text-center">
               <div className="single-product-item">
                 <div className="product-image">
-                  {/* Link to the dynamic product details page */}
-                  <Link to={product.link}>
-                    <img 
-                      src={product.image} 
-                      alt={product.name} 
-                      style={{ width: '100%', height: '250px', objectFit: 'contain', background: '#f9f9f9' }}
+                  <Link to={`/product/${product.id}`}>
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      style={{
+                        width: '100%',
+                        height: '250px',
+                        objectFit: 'contain',
+                        background: '#f9f9f9',
+                        padding: '10px'
+                      }}
                     />
                   </Link>
                 </div>
+
                 <h3>{product.name}</h3>
+
                 <p className="product-price">
                   <span>Final Price</span> ₹ {product.price}
                 </p>
-                <Link to="/cart" className="cart-btn">
+
+                <button 
+                 className="cart-btn"
+                  onClick={() => handleAddToCart(product)}
+                >
                   <i className="fas fa-shopping-cart" /> Add to Cart
-                </Link>
+                </button>
+
               </div>
             </div>
           ))}
         </div>
       </div>
     </div>
-        </>
-
-    )
+  )
 }
 
-export default Products
+export default Product

@@ -1,54 +1,59 @@
+import React, { useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+// import { CartContext } from '../context/CartContext'; // Assuming you have this now
 
 const Header = () => {
-  // This hook helps us identify which page is active to highlight the menu item
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  // const { cart } = useContext(CartContext);
+  // const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+
+  // Function to close menu when a link is clicked
+  const closeMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <div className="top-header-area" id="sticker" style={{ backgroundColor: "#051922" }}>
+    <div className={`top-header-area ${isMobileMenuOpen ? 'mobile-menu-active' : ''}`} id="sticker" style={{ backgroundColor: "#051922" }}>
       <div className="container">
         <div className="row">
           <div className="col-lg-12 col-sm-12 text-center">
             <div className="main-menu-wrap">
               {/* logo */}
               <div className="site-logo">
-                <Link to="/">
+                <Link to="/" onClick={closeMenu}>
                   <img src="/img/logo.png" alt="Aqua Guard Logo" />
                 </Link>
               </div>
+
+              {/* Mobile Menu Toggle Button */}
+              <div className="mobile-menu-toggle d-lg-none" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                <i className={isMobileMenuOpen ? "fas fa-times" : "fas fa-bars"} style={{color: '#fff', fontSize: '24px'}}></i>
+              </div>
               
               {/* menu start */}
-              <nav className="main-menu">
-                <ul>
+              <nav className={`main-menu ${isMobileMenuOpen ? 'active' : ''}`}>
+                <ul className={isMobileMenuOpen ? 'active' : ''}>
                   <li className={location.pathname === '/' ? 'current-list-item' : ''}>
-                    <Link to="/">Home</Link>
+                    <Link to="/" onClick={closeMenu}>Home</Link>
                   </li>
-                  <li className={location.pathname === '/about'  ? 'current-list-item' : ''}>
-                    <Link to="/about">About</Link>
+                  <li className={location.pathname === '/about' ? 'current-list-item' : ''}>
+                    <Link to="/about" onClick={closeMenu}>About</Link>
                   </li>
-                  {/* Changed path to match your logic */}
-            <li className={location.pathname === '/products' || location.pathname === '/single-product' ? 'current-list-item' : ''}>
-                    <Link to="/products">Products</Link>
+                  <li className={location.pathname.includes('/product') ? 'current-list-item' : ''}>
+                    <Link to="/products" onClick={closeMenu}>Products</Link>
                   </li>
                   <li className={location.pathname === '/contact' ? 'current-list-item' : ''}>
-                    <Link to="/contact">Contact</Link>
+                    <Link to="/contact" onClick={closeMenu}>Contact</Link>
                   </li>
                   <li>
                     <div className="header-icons">
-                      <Link className="shopping-cart" to="/cart">
+                      <Link className="shopping-cart" to="/cart" onClick={closeMenu}>
                         <i className="fas fa-shopping-cart" />
+                        {/* {cartCount > 0 && <span className="cart-badge">{cartCount}</span>} */}
                       </Link>
-                      <a className="mobile-hide search-bar-icon" href="#search">
-                        <i className="fas fa-search" />
-                      </a>
                     </div>
                   </li>
                 </ul>
               </nav>
-              <a className="mobile-show search-bar-icon" href="#search">
-                <i className="fas fa-search" />
-              </a>
-              <div className="mobile-menu" />
               {/* menu end */}
             </div>
           </div>

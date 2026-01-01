@@ -1,8 +1,15 @@
 import React from 'react'
 import { products } from '../Data/productdata'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { addToCart } from './Cart';
 
 const Product = () => {
+    const navigate = useNavigate();
+
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    navigate("/cart"); // optional redirect
+  };
     return (
    <div className="product-section mt-150 mb-150">
       <div className="container">
@@ -46,9 +53,12 @@ const Product = () => {
                 <p className="product-price">
                   <span>Final Price</span> ₹ {product.price}
                 </p>
-                <Link to="/cart" className="cart-btn">
+                 <button 
+                 className="cart-btn"
+                  onClick={() => handleAddToCart(product)}
+                >
                   <i className="fas fa-shopping-cart" /> Add to Cart
-                </Link>
+                </button>
               </div>
             </div>
           ))}

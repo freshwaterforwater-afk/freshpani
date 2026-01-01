@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
 
 const Deal = () => {
   // Set the target date: 7 days from now
@@ -85,9 +86,9 @@ const Deal = () => {
             </div>
 
             {/* Changed icon to fa-arrow-right for a "Shop Now" feel */}
-            <a href="shop.html" className="cart-btn mt-3">
+            <Link to="/products" className="cart-btn mt-3">
               <i className="fas fa-arrow-right" /> View All Products
-            </a>
+            </Link>
           </div>
         </div>
       </div>
