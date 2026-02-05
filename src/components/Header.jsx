@@ -20,7 +20,7 @@ const Header = () => {
               {/* logo */}
               <div className="site-logo">
                 <Link to="/" onClick={closeMenu}>
-                  <img src="/img/logo.png" alt="Aqua Guard Logo" />
+                  <img src="/img/logo.png" alt="Aqua Guard Logo" style={{width:"150%"}} />
                 </Link>
               </div>
 
